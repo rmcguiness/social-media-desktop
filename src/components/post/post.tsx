@@ -13,7 +13,7 @@ const Post = ({ post }: { post: PostType }) => {
                 </div>
                 <h1 className="text-lg font-bold">{post.title}</h1>
                 <p>{post.content}</p>
-                {post.image ? <ImageWrapper src={post.image} alt={post.title} width={400} height={200} /> : null}
+                {post.image ? <ImageWrapper src={post.image} alt={post.title} imageClassName="rounded-lg" /> : null}
             </div>
         </Card>
     );

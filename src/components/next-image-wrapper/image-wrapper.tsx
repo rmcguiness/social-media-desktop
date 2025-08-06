@@ -1,16 +1,11 @@
 import Image from "next/image";
 import s from './image-wrapper.module.css';
+import cn from "classnames";
 
-const ImageWrapper = ({ src, alt, width, height, className }: { src: string; alt: string; width: number; height: number; className?: string }) => {
-    const WrapperStyle = {
-        position: 'relative' as const,
-        maxWidth: width,
-        width: '100%',
-        objectFit: 'contain' as const,
-    }
+const ImageWrapper = ({ src, alt, wrapperClassName, imageClassName }: { src: string; alt: string; wrapperClassName?: string, imageClassName?: string }) => {
     return (
-        <div style={WrapperStyle} className={className}>
-            <Image src={src} alt={alt} className={s['image']} fill style={{ objectFit: 'cover' }} />
+        <div className={cn(s['wrapper'], wrapperClassName)}>
+            <Image src={src} alt={alt} className={cn(s['image'], imageClassName)} fill style={{ objectFit: 'cover' }} />
         </div>
     );
 };
