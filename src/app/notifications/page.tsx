@@ -1,4 +1,4 @@
-import SideBar from "@/components/sidebar/sidebar";
+import { SideBar } from "@/components";
 
 const Notifications = () => {
     return (

@@ -1,5 +1,4 @@
-import SideBar from "@/components/sidebar/sidebar";
-import Post from "@/components/post/post";
+import { SideBar, Post } from "@/components";
 import { mockPosts } from "@/mocks/mockPosts";
 
 export default function Home() {

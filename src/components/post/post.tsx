@@ -1,7 +1,6 @@
 import { Post as PostType } from '@/types/post-type';
 import Image from 'next/image';
-import ImageWrapper from '../next-image-wrapper/image-wrapper';
-import Card from '../card/card';
+import { ImageWrapper, Card } from '@/components';
 
 const Post = ({ post }: { post: PostType }) => {
     return (
