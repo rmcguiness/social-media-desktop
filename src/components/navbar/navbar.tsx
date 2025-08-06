@@ -1,6 +1,6 @@
 import { EllipsisVertical, Search } from "lucide-react";
 import Image from "next/image";
-import ThemeButton from "../theme-button/theme-button";
+import { ThemeButton } from "@/components";
 
 const NavBar = () => {
     return (

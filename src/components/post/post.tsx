@@ -6,7 +6,7 @@ import { Heart, MessageCircle, Share } from 'lucide-react';
 const Post = ({ post }: { post: PostType }) => {
     return (
         <Card>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col m-4 gap-2">
                 <div className="flex items-start gap-2">
                     <Image src={post.user.image} alt={post.user.name} width={32} height={32} className="rounded-full" />
                     <h1>{post.user.name}</h1>
