@@ -1,11 +1,16 @@
-import { Post } from "@/components";
+import { Post, PageTitle } from "@/components";
 import { mockPosts } from "@/mocks/mockPosts";
+import { Filter } from "lucide-react";
 
 export default function Home() {
     return (
         <div className="font-sans min-h-[var(--screen-minus-navbar)] flex scroll-smooth">
             <main className="flex flex-col w-full mx-5 max-w-3xl justify-self-center">
-                <h1 className="text-2xl font-bold">Home</h1>
+                <PageTitle title="For You Page">
+                    <button className="text-sm font-bold text-foreground-muted">
+                        <Filter size={24} />
+                    </button>
+                </PageTitle>
                 <div className="flex flex-col gap-4">
                     {mockPosts.map((post) => (
                         <Post key={post.id} post={post} />

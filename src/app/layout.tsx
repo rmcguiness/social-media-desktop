@@ -29,7 +29,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
       >
         <NavBar />
-        <div className="min-h-[var(--screen-minus-navbar)] flex gap-4">
+        <div className="min-h-[var(--screen-minus-navbar)] flex md:gap-4 transition-all duration-300">
           <SideBar />
           {children}
         </div>
