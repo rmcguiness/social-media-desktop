@@ -1,4 +1,3 @@
-import { SideBar } from "@/components";
 
 const Notifications = () => {
     return (
