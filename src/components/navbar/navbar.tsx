@@ -1,5 +1,6 @@
 import { EllipsisVertical, Search } from "lucide-react";
 import Image from "next/image";
+import ThemeButton from "../theme-button/theme-button";
 
 const NavBar = () => {
     return (
@@ -12,7 +13,8 @@ const NavBar = () => {
                 <Search />
                 <input className="w-full placeholder:text-foreground-muted outline-none bg-transparent focus:outline-none" placeholder="Search" />
             </div>
-            <div>
+            <div className="flex items-center gap-2">
+                <ThemeButton />
                 <button className="p-2 rounded-full hover:shadow-md-glow transition-all duration-300">
                     <EllipsisVertical />
                 </button>

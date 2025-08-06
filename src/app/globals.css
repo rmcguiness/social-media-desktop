@@ -6,12 +6,10 @@
 	--foreground-muted: #919191;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
-		--foreground-muted: #666666;
-	}
+.dark {
+	--background: #0a0a0a;
+	--foreground: #ededed;
+	--foreground-muted: #666666;
 }
 
 @theme inline {
