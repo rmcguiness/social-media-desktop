@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { NavBar } from "@/components";
+import { NavBar, SideBar } from "@/components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +29,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
       >
         <NavBar />
-        <div className="min-h-[var(--screen-minus-navbar)]">
+        <div className="min-h-[var(--screen-minus-navbar)] flex gap-4">
+          <SideBar />
           {children}
         </div>
       </body>
