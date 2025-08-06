@@ -1,26 +1,38 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+	--background: #ffffff;
+	--foreground: #171717;
+	--foreground-muted: #919191;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+		--foreground-muted: #666666;
+	}
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-foreground-muted: var(--foreground-muted);
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
+	--screen-minus-navbar: calc(100vh - 64px);
+	--shadow-sm-glow: 0 1px 2px 0 var(--color-foreground);
+	--shadow-md-glow: 0 4px 6px -1px var(--color-foreground);
+	--shadow-lg-glow: 0 10px 15px -3px var(--color-foreground);
+	--shadow-xl-glow: 0 20px 25px -5px var(--color-foreground);
+	--shadow-0-sm-glow: 0 0px 2px 0 var(--color-foreground);
+	--shadow-0-md-glow: 0 0px 6px -1px var(--color-foreground);
+	--shadow-0-lg-glow: 0 0px 15px -3px var(--color-foreground);
+	--shadow-0-xl-glow: 0 0px 25px -5px var(--color-foreground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: Arial, Helvetica, sans-serif;
 }

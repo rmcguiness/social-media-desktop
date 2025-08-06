@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} overflow-hidden antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
       >
         <NavBar />
-        <div className="">
+        <div className="min-h-[var(--screen-minus-navbar)]">
           {children}
         </div>
       </body>
