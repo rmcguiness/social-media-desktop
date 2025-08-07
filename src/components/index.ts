@@ -3,3 +3,4 @@ export * from './ui';
 export * from './post';
 export * from './sidebar';
 export * from './comments';
+export * from './notification';
