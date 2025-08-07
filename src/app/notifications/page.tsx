@@ -1,6 +1,5 @@
 import { Notification, PageTitle } from "@/components";
 import { mockNotifications } from "@/mocks/mockNotifications";
-import { Bell, Heart } from "lucide-react";
 
 const Notifications = () => {
     return (

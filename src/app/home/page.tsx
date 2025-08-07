@@ -1,4 +1,4 @@
-import { Post, PageTitle, Card } from "@/components";
+import { Post, PageTitle } from "@/components";
 import { mockPosts } from "@/mocks/mockPosts";
 import { Filter } from "lucide-react";
 import RightBar from "./_components/right-bar";
