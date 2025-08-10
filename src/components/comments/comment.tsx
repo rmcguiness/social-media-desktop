@@ -10,7 +10,7 @@ const Comment = ({ post }: { post: Post }) => {
             </div>
             <div className="flex flex-col text-left">
                 <p className="text-sm font-bold">{user.name}</p>
-                <p className="text-sm">{content.slice(0, 50)}</p>
+                <p className="text-sm">{content.slice(0, 50)}... <span className="text-foreground-muted">See more</span></p>
             </div>
         </div>
     )
