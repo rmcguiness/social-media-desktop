@@ -24,6 +24,11 @@
 .DS_Store
 *.pem
 
+# macOS resource forks (AppleDouble files)
+._*
+.Spotlight-V100
+.Trashes
+
 # debug
 npm-debug.log*
 yarn-debug.log*
