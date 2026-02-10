@@ -9,7 +9,7 @@ import { Card } from '@/components';
 
 export default function LoginPage() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
+    const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const response = await authService.login({ email, password });
+            const response = await authService.login({ emailOrUsername, password });
             
             // Store token in cookie via server action
             await setAuthToken(response.token);
@@ -36,35 +36,42 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4">
-            <Card className="w-full max-w-md">
-                <div className="p-8">
-                    <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+        <div className="min-h-[var(--screen-minus-navbar)] flex items-center justify-center px-4 py-8 bg-background">
+            <Card className="w-full max-w-md shadow-xl">
+                <div className="p-6 md:p-8">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent mb-2">
+                            Welcome Back
+                        </h1>
+                        <p className="text-foreground-muted text-sm">
+                            Sign in to continue to your account
+                        </p>
+                    </div>
                     
                     {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium mb-2">
-                                Email
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="space-y-2">
+                            <label htmlFor="emailOrUsername" className="block text-sm font-semibold text-foreground">
+                                Email or Username
                             </label>
                             <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                id="emailOrUsername"
+                                type="text"
+                                value={emailOrUsername}
+                                onChange={(e) => setEmailOrUsername(e.target.value)}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="you@example.com"
+                                className="input-field w-full"
+                                placeholder="you@example.com or username"
                             />
                         </div>
 
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="password" className="block text-sm font-semibold text-foreground">
                                 Password
                             </label>
                             <input
@@ -73,7 +80,7 @@ export default function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="input-field w-full"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -81,18 +88,20 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                         >
-                            {loading ? 'Logging in...' : 'Login'}
+                            {loading ? 'Signing in...' : 'Sign In'}
                         </button>
                     </form>
 
-                    <p className="text-center text-sm text-foreground-muted mt-6">
-                        Don&apos;t have an account?{' '}
-                        <Link href="/register" className="text-blue-500 hover:underline">
-                            Sign up
-                        </Link>
-                    </p>
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-foreground-muted">
+                            Don&apos;t have an account?{' '}
+                            <Link href="/register" className="text-accent font-semibold hover:text-accent-hover hover:underline transition-colors">
+                                Sign up
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </Card>
         </div>

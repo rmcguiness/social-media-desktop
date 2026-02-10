@@ -11,37 +11,65 @@ type PostProps = {
 
 const Post = ({ post, clickable = true }: PostProps) => {
     const content = (
-        <div className="flex flex-col m-4 gap-2">
-            <div className="flex items-center justify-start gap-2">
-                <Image src={post.user.image} alt={post.user.name} width={32} height={32} className="rounded-full" />
-                <h1>{post.user.name}</h1>
+        <div className="flex flex-col p-4 md:p-5 gap-3">
+            {/* Post Header */}
+            <div className="flex items-center gap-3">
+                <Image 
+                    src={post.user.image} 
+                    alt={post.user.name} 
+                    width={40} 
+                    height={40} 
+                    className="rounded-full ring-2 ring-border"
+                />
+                <div className="flex flex-col">
+                    <h3 className="font-semibold text-foreground hover:text-accent transition-colors">
+                        {post.user.name}
+                    </h3>
+                    <p className="text-xs text-foreground-muted">@{post.user.username}</p>
+                </div>
             </div>
-            <div>
-                <h1 className="text-lg font-bold">{post.title}</h1>
-                <p>{post.content}</p>
-                {post.image ? <ImageWrapper src={post.image} alt={post.title} imageClassName="rounded-lg" /> : null}
+
+            {/* Post Content */}
+            <div className="space-y-2">
+                <h2 className="text-lg md:text-xl font-bold text-foreground leading-tight">
+                    {post.title}
+                </h2>
+                <p className="text-foreground-muted text-sm md:text-base leading-relaxed">
+                    {post.content}
+                </p>
+                {post.image && (
+                    <div className="mt-3 rounded-xl overflow-hidden">
+                        <ImageWrapper 
+                            src={post.image} 
+                            alt={post.title} 
+                            imageClassName="w-full h-auto object-cover hover:scale-105 transition-transform duration-300" 
+                        />
+                    </div>
+                )}
             </div>
-            <div className="flex w-full justify-end items-center pt-1 px-2 sm:gap-5 gap-2">
-                <button className="flex items-center gap-1">
-                    <Share size={18} />
-                    <span>{post.shares}</span>
+
+            {/* Post Actions */}
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-background text-foreground-muted hover:text-red-500 transition-colors group">
+                    <Heart size={18} className="group-hover:fill-red-500" />
+                    <span className="text-sm font-medium">{post.likes}</span>
                 </button>
-                <button className="flex items-center gap-1">
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-background text-foreground-muted hover:text-accent transition-colors">
                     <MessageCircle size={18} />
-                    <span>{post.comments}</span>
+                    <span className="text-sm font-medium">{post.comments}</span>
                 </button>
-                <button className="flex items-center gap-1">
-                    <Heart size={18} />
-                    <span>{post.likes}</span>
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-background text-foreground-muted hover:text-accent transition-colors">
+                    <Share size={18} />
+                    <span className="text-sm font-medium">{post.shares}</span>
                 </button>
             </div>
         </div>
     );
 
     return (
-        <Card>
+        <Card className={clickable ? "cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200" : ""}>
             {clickable ? (
-                <Link href={`/posts/${post.id}`} className="block hover:opacity-80 transition-opacity">
+                <Link href={`/posts/${post.id}`} className="block">
                     {content}
                 </Link>
             ) : (

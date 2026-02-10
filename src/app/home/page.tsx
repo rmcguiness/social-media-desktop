@@ -9,24 +9,40 @@ export default async function Home() {
     const posts = data ?? [];
 
     return (
-        <main className="font-sans flex gap-4 min-h-[var(--screen-minus-navbar)] mx-auto px-4 mb-10">
-            <div className="flex flex-8/12 flex-col max-w-4xl ">
-                <PageTitle title="For You Page">
-                    <button className="text-sm font-bold text-foreground-muted">
-                        <Filter size={24} />
-                    </button>
-                </PageTitle>
-                <div className="flex flex-col gap-4">
-                    {posts.length === 0 ? (
-                        <p>No posts yet. Be the first to post!</p>
-                    ) : (
-                        posts.map((post) => (
-                            <Post key={post.id} post={post} />
-                        ))
-                    )}
+        <div className="w-full max-w-7xl mx-auto">
+            <div className="flex gap-6 px-3 md:px-6 py-4">
+                {/* Main Content */}
+                <div className="flex-1 max-w-2xl">
+                    {/* Header */}
+                    <div className="mb-6">
+                        <PageTitle title="For You Page">
+                            <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Filter posts">
+                                <Filter size={20} className="text-foreground-muted" />
+                            </button>
+                        </PageTitle>
+                    </div>
+
+                    {/* Posts Feed */}
+                    <div className="flex flex-col gap-4">
+                        {posts.length === 0 ? (
+                            <div className="card p-8 text-center">
+                                <p className="text-foreground-muted text-lg">
+                                    No posts yet. Be the first to post!
+                                </p>
+                            </div>
+                        ) : (
+                            posts.map((post) => (
+                                <Post key={post.id} post={post} />
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Right Sidebar - Hidden on mobile */}
+                <div className="hidden lg:block">
+                    <RightBar />
                 </div>
             </div>
-            <RightBar />
-        </main>
+        </div>
     );
 }

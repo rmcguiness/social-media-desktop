@@ -1,7 +1,7 @@
 import { API_ENDPOINTS, API_BASE_URL } from '@/config/api';
 
 export type LoginData = {
-  email: string;
+  emailOrUsername: string;
   password: string;
 };
 

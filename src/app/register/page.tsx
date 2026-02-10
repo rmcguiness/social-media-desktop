@@ -60,20 +60,27 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-8">
-            <Card className="w-full max-w-md">
-                <div className="p-8">
-                    <h1 className="text-3xl font-bold text-center mb-6">Sign Up</h1>
+        <div className="min-h-[var(--screen-minus-navbar)] flex items-center justify-center px-4 py-8 bg-background">
+            <Card className="w-full max-w-md shadow-xl">
+                <div className="p-6 md:p-8">
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent mb-2">
+                            Create Account
+                        </h1>
+                        <p className="text-foreground-muted text-sm">
+                            Join our community today
+                        </p>
+                    </div>
                     
                     {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="name" className="block text-sm font-semibold text-foreground">
                                 Full Name
                             </label>
                             <input
@@ -83,13 +90,13 @@ export default function RegisterPage() {
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="input-field w-full"
                                 placeholder="John Doe"
                             />
                         </div>
 
-                        <div>
-                            <label htmlFor="username" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="username" className="block text-sm font-semibold text-foreground">
                                 Username
                             </label>
                             <input
@@ -99,13 +106,13 @@ export default function RegisterPage() {
                                 value={formData.username}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="input-field w-full"
                                 placeholder="johndoe"
                             />
                         </div>
 
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="email" className="block text-sm font-semibold text-foreground">
                                 Email
                             </label>
                             <input
@@ -115,13 +122,13 @@ export default function RegisterPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="input-field w-full"
                                 placeholder="you@example.com"
                             />
                         </div>
 
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="password" className="block text-sm font-semibold text-foreground">
                                 Password
                             </label>
                             <input
@@ -131,14 +138,15 @@ export default function RegisterPage() {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                minLength={6}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                minLength={8}
+                                className="input-field w-full"
                                 placeholder="••••••••"
                             />
+                            <p className="text-xs text-foreground-muted">Minimum 8 characters</p>
                         </div>
 
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+                        <div className="space-y-2">
+                            <label htmlFor="confirmPassword" className="block text-sm font-semibold text-foreground">
                                 Confirm Password
                             </label>
                             <input
@@ -148,8 +156,8 @@ export default function RegisterPage() {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 required
-                                minLength={6}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                minLength={8}
+                                className="input-field w-full"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -157,18 +165,20 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                         >
-                            {loading ? 'Creating account...' : 'Sign Up'}
+                            {loading ? 'Creating account...' : 'Create Account'}
                         </button>
                     </form>
 
-                    <p className="text-center text-sm text-foreground-muted mt-6">
-                        Already have an account?{' '}
-                        <Link href="/login" className="text-blue-500 hover:underline">
-                            Login
-                        </Link>
-                    </p>
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-foreground-muted">
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-accent font-semibold hover:text-accent-hover hover:underline transition-colors">
+                                Login
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </Card>
         </div>

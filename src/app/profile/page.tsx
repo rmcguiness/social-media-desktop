@@ -2,10 +2,11 @@ import { PageTitle, Post } from "@/components";
 import { usersService } from "@/services/users.service";
 import { postsService } from "@/services/posts.service";
 import Image from "next/image";
+import { User } from "@/types/user-type";
 
 export default async function Profile() {
-    let user = null;
-    let userPosts = [];
+    let user: User | null = null;
+    let userPosts: any[] = [];
     let error = null;
 
     try {
@@ -14,7 +15,7 @@ export default async function Profile() {
 
         // Get all posts and filter for this user's posts
         const { data: allPosts } = await postsService.list(100);
-        userPosts = allPosts.filter(post => post.user.id === user.id);
+        userPosts = allPosts?.filter(post => post.user.id === user?.id) ?? [];
     } catch (err) {
         error = err instanceof Error ? err.message : 'Failed to load profile';
         console.error('Error fetching profile:', err);
@@ -37,7 +38,7 @@ export default async function Profile() {
                         {/* Profile Header */}
                         <div className="flex flex-col items-center gap-4 py-8 border-b border-foreground-muted">
                             <Image
-                                src={user.image || 'https://via.placeholder.com/150'}
+                                src={user.image || `https://picsum.photos/id/10/200`}
                                 alt={user.name}
                                 width={120}
                                 height={120}
@@ -50,7 +51,7 @@ export default async function Profile() {
                             </div>
                             <div className="flex gap-6 text-sm">
                                 <div className="text-center">
-                                    <p className="font-bold text-lg">{userPosts.length}</p>
+                                    <p className="font-bold text-lg">{userPosts?.length}</p>
                                     <p className="text-foreground-muted">Posts</p>
                                 </div>
                             </div>
@@ -64,7 +65,7 @@ export default async function Profile() {
                                     No posts yet. Create your first post!
                                 </p>
                             ) : (
-                                userPosts.map((post) => (
+                                userPosts?.map((post) => (
                                     <Post key={post.id} post={post} />
                                 ))
                             )}

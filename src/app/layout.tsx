@@ -27,15 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute='class'
           defaultTheme='dark'
           themes={['light', 'dark']}>
           <NavBar />
-          <div className="min-h-[var(--screen-minus-navbar)] flex md:gap-4 transition-all duration-300">
+          <div className="flex min-h-[var(--screen-minus-navbar)]">
             <SideBar />
-            {children}
+            <main className="flex-1 w-full md:ml-0">
+              {children}
+            </main>
           </div>
         </ThemeProvider>
       </body>
