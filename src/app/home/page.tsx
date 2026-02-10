@@ -1,12 +1,17 @@
-import { Post, PageTitle } from "@/components";
+import { Post, PageTitle, CreatePost } from "@/components";
 import { Filter } from "lucide-react";
 import RightBar from "./_components/right-bar";
 import { postsService } from "@/services/posts.service";
+import { getAuthToken } from "@/app/actions/auth";
 
 export default async function Home() {
     // Fetch data on the server
     const {data} = await postsService.list(20);
     const posts = data ?? [];
+    
+    // Check if user is authenticated
+    const token = await getAuthToken();
+    const isAuthenticated = !!token;
 
     return (
         <div className="w-full max-w-7xl mx-auto">
@@ -21,6 +26,9 @@ export default async function Home() {
                             </button>
                         </PageTitle>
                     </div>
+
+                    {/* Create Post - Only show when authenticated */}
+                    {isAuthenticated && <CreatePost />}
 
                     {/* Posts Feed */}
                     <div className="flex flex-col gap-4">
