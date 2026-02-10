@@ -1,15 +1,16 @@
 import { Post as PostType } from '@/types/post-type';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ImageWrapper, Card } from '@/components';
+import { ImageWrapper, Card, PostActions } from '@/components';
 import { Heart, MessageCircle, Share } from 'lucide-react';
 
 type PostProps = {
     post: PostType;
     clickable?: boolean;
+    currentUserId?: number;
 };
 
-const Post = ({ post, clickable = true }: PostProps) => {
+const Post = ({ post, clickable = true, currentUserId }: PostProps) => {
     const content = (
         <div className="flex flex-col p-4 md:p-5 gap-3">
             {/* Post Header */}
@@ -63,6 +64,9 @@ const Post = ({ post, clickable = true }: PostProps) => {
                     <span className="text-sm font-medium">{post.shares}</span>
                 </button>
             </div>
+            
+            {/* Show edit/delete actions if not clickable (on post detail page) and user owns post */}
+            {!clickable && <PostActions post={post} currentUserId={currentUserId} />}
         </div>
     );
 

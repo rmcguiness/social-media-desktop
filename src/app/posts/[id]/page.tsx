@@ -1,5 +1,8 @@
-import { Post, PageTitle, Comment } from "@/components";
+import { Post, PageTitle, Comment, CreateComment } from "@/components";
 import { postsService } from "@/services/posts.service";
+import { commentsService } from "@/services/comments.service";
+import { usersService } from "@/services/users.service";
+import { getAuthToken } from "@/app/actions/auth";
 import { notFound } from "next/navigation";
 import { Card } from "@/components";
 
@@ -20,39 +23,62 @@ export default async function PostPage({ params }: PostPageProps) {
         const post = await postsService.getById(postId);
         
         // Fetch comments for this post
-        // Comments are posts with parentId matching this post's id
-        const { data: allPosts } = await postsService.list(100);
-        const comments = allPosts.filter((p) => p.parentId === postId);
+        const { data: comments } = await commentsService.list(postId, 50);
+        
+        // Check if user is authenticated and get user ID
+        const token = await getAuthToken();
+        const isAuthenticated = !!token;
+        let currentUserId: number | undefined;
+        
+        if (isAuthenticated && token) {
+            try {
+                const user = await usersService.me(token);
+                currentUserId = user.id;
+            } catch (err) {
+                // Token might be invalid, ignore
+            }
+        }
 
         return (
-            <main className="font-sans flex gap-4 min-h-[var(--screen-minus-navbar)] mx-auto px-4 mb-10">
-                <div className="flex flex-col max-w-4xl w-full gap-4">
-                    <PageTitle title="Post" />
-                    
-                    {/* Main Post */}
-                    <Post post={post} clickable={false} />
-
-                    {/* Comments Section */}
-                    <Card>
-                        <div className="m-4">
-                            <h2 className="text-lg font-bold mb-4">
-                                Comments ({comments.length})
-                            </h2>
-                            <div className="flex flex-col gap-4">
-                                {comments.length === 0 ? (
-                                    <p className="text-sm text-foreground-muted">
-                                        No comments yet. Be the first to comment!
-                                    </p>
-                                ) : (
-                                    comments.map((comment) => (
-                                        <Comment key={comment.id} post={comment} />
-                                    ))
-                                )}
-                            </div>
+            <div className="w-full max-w-7xl mx-auto">
+                <div className="flex gap-6 px-3 md:px-6 py-4">
+                    {/* Main Content */}
+                    <div className="flex-1 max-w-2xl">
+                        {/* Header */}
+                        <div className="mb-6">
+                            <PageTitle title="Post" />
                         </div>
-                    </Card>
+                        
+                        {/* Main Post */}
+                        <Post post={post} clickable={false} currentUserId={currentUserId} />
+
+                        {/* Comments Section */}
+                        <Card className="mt-4">
+                            <div className="p-4 md:p-5">
+                                <h2 className="text-xl font-bold mb-4">
+                                    Comments ({comments.length})
+                                </h2>
+                                
+                                {/* Comment Form - Only show when authenticated */}
+                                {isAuthenticated && <CreateComment postId={postId} />}
+                                
+                                {/* Comments List */}
+                                <div className="flex flex-col gap-4 mt-6">
+                                    {comments.length === 0 ? (
+                                        <p className="text-sm text-foreground-muted text-center py-4">
+                                            No comments yet. Be the first to comment!
+                                        </p>
+                                    ) : (
+                                        comments.map((comment) => (
+                                            <Comment key={comment.id} comment={comment} />
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
                 </div>
-            </main>
+            </div>
         );
     } catch (error) {
         console.error('Error fetching post:', error);

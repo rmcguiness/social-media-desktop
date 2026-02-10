@@ -62,6 +62,17 @@ export const postsService = {
   },
 
   /**
+   * Update a post (requires authentication)
+   * No caching for mutations
+   */
+  async update(id: number, data: Partial<CreatePostData>, token: string): Promise<Post> {
+    return apiClient.put<Post>(API_ENDPOINTS.post(id), data, {
+      token,
+      cache: 'no-store',
+    });
+  },
+
+  /**
    * Delete a post (requires authentication)
    * No caching for mutations
    */
