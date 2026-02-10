@@ -1,6 +1,7 @@
-import { EllipsisVertical, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import { ThemeButton } from "@/components";
+import { UserMenu } from "./user-menu";
 
 const NavBar = () => {
     return (
@@ -15,9 +16,7 @@ const NavBar = () => {
             </div>
             <div className="flex items-center gap-2">
                 <ThemeButton />
-                <button className="p-2 rounded-full hover:shadow-md-glow transition-all duration-300">
-                    <EllipsisVertical />
-                </button>
+                <UserMenu />
             </div>
         </div>
     )

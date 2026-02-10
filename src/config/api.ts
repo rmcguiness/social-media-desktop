@@ -24,4 +24,7 @@ export const API_ENDPOINTS = {
   // Messages
   conversations: '/api/conversations',
   messages: (conversationId: number) => `/api/conversations/${conversationId}/messages`,
+  
+  // Notifications
+  notifications: '/api/notifications',
 } as const;

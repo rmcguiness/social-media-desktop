@@ -7,7 +7,6 @@ export default async function Home() {
     // Fetch data on the server
     const {data} = await postsService.list(20);
     const posts = data ?? [];
-    const comments = data?? [];
 
     return (
         <main className="font-sans flex gap-4 min-h-[var(--screen-minus-navbar)] mx-auto px-4 mb-10">
@@ -27,7 +26,7 @@ export default async function Home() {
                     )}
                 </div>
             </div>
-            <RightBar comments={comments} />
+            <RightBar />
         </main>
     );
 }
