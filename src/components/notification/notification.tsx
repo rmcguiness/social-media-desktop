@@ -1,7 +1,10 @@
+'use client';
+
 import { Heart, MessageCircle } from "lucide-react";
 import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Card } from "@/components";
 import type { Notification as NotificationType } from "@/services/notifications.service";
 
 type NotificationProps = {
@@ -26,8 +29,20 @@ const Notification = ({ notification }: NotificationProps) => {
     }, [createdAt]);
 
     const getIcon = () => {
-        if (type === "like") return <Heart size={32} fill="#ff70ac" className="text-pink-500" />;
-        if (type === "comment") return <MessageCircle size={32} className="text-blue-500" />;
+        if (type === "like") {
+            return (
+                <div className="p-2 rounded-full bg-pink-500/10">
+                    <Heart size={20} className="text-pink-500" fill="currentColor" />
+                </div>
+            );
+        }
+        if (type === "comment") {
+            return (
+                <div className="p-2 rounded-full bg-accent/10">
+                    <MessageCircle size={20} className="text-accent" />
+                </div>
+            );
+        }
         return null;
     };
 
@@ -35,8 +50,12 @@ const Notification = ({ notification }: NotificationProps) => {
         if (type === "like") {
             return (
                 <>
-                    <span className="font-bold">{actor.name}</span> liked your post{" "}
-                    <Link href={`/posts/${post.id}`} className="text-blue-500 hover:underline">
+                    <span className="font-semibold text-foreground">{actor.name}</span>
+                    <span className="text-foreground-muted"> liked your post </span>
+                    <Link 
+                        href={`/posts/${post.id}`} 
+                        className="text-accent font-medium hover:underline transition-colors"
+                    >
                         &quot;{post.title}&quot;
                     </Link>
                 </>
@@ -44,8 +63,12 @@ const Notification = ({ notification }: NotificationProps) => {
         }
         return (
             <>
-                <span className="font-bold">{actor.name}</span> commented on your post{" "}
-                <Link href={`/posts/${post.id}`} className="text-blue-500 hover:underline">
+                <span className="font-semibold text-foreground">{actor.name}</span>
+                <span className="text-foreground-muted"> commented on your post </span>
+                <Link 
+                    href={`/posts/${post.id}`} 
+                    className="text-accent font-medium hover:underline transition-colors"
+                >
                     &quot;{post.title}&quot;
                 </Link>
             </>
@@ -53,26 +76,35 @@ const Notification = ({ notification }: NotificationProps) => {
     };
 
     return (
-        <div className="flex gap-3 items-start py-2">
-            <div className="flex-shrink-0">
-                <Image
-                    src={actor.image || 'https://via.placeholder.com/40'}
-                    alt={actor.name}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                />
-            </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-sm">
-                    {getNotificationText()}
-                </p>
-                <p className="text-xs text-foreground-muted mt-1">{timeAgo}</p>
-            </div>
-            <div className="flex-shrink-0">
-                {getIcon()}
-            </div>
-        </div>
+        <Link href={`/posts/${post.id}`} className="block">
+            <Card className="cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                <div className="flex gap-4 items-start p-4">
+                    {/* Actor Avatar */}
+                    <div className="flex-shrink-0">
+                        <Image
+                            src={actor.image || 'https://via.placeholder.com/48'}
+                            alt={actor.name}
+                            width={48}
+                            height={48}
+                            className="rounded-full ring-2 ring-border"
+                        />
+                    </div>
+
+                    {/* Notification Content */}
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm md:text-base leading-relaxed">
+                            {getNotificationText()}
+                        </p>
+                        <p className="text-xs text-foreground-muted mt-2">{timeAgo}</p>
+                    </div>
+
+                    {/* Type Icon */}
+                    <div className="flex-shrink-0">
+                        {getIcon()}
+                    </div>
+                </div>
+            </Card>
+        </Link>
     );
 };
 

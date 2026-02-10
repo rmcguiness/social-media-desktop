@@ -1,5 +1,6 @@
 import { Notification, PageTitle } from "@/components";
 import { notificationsService } from "@/services/notifications.service";
+import { Bell, BellOff } from "lucide-react";
 
 export default async function Notifications() {
     let notifications = [];
@@ -14,33 +15,51 @@ export default async function Notifications() {
     }
 
     return (
-        <div className="font-sans min-h-[var(--screen-minus-navbar)] w-full flex gap-4">
-            <main className="flex flex-col w-full max-w-3xl px-5 mx-auto justify-self-center">
-                <PageTitle title="Notifications" className="sticky top-16 bg-background" />
-                <div className="flex flex-col gap-2 px-4 mt-4">
-                    {error ? (
-                        <div className="text-center py-8">
-                            <p className="text-red-500">Error: {error}</p>
-                            <p className="text-sm text-foreground-muted mt-2">
-                                Make sure you&apos;re logged in and the backend server is running.
-                            </p>
-                        </div>
-                    ) : notifications.length === 0 ? (
-                        <p className="text-center py-8 text-foreground-muted">
-                            No notifications yet
-                        </p>
-                    ) : (
-                        notifications.map((notification, index) => (
-                            <div key={notification.id}>
-                                <Notification notification={notification} />
-                                {index !== notifications.length - 1 && (
-                                    <hr className="w-full border-foreground-muted opacity-20" />
-                                )}
+        <div className="w-full max-w-7xl mx-auto">
+            <div className="flex gap-6 px-3 md:px-6 py-4">
+                {/* Main Content */}
+                <div className="flex-1 max-w-2xl">
+                    {/* Header */}
+                    <div className="mb-6">
+                        <PageTitle title="Notifications">
+                            <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Mark all as read">
+                                <Bell size={20} className="text-foreground-muted" />
+                            </button>
+                        </PageTitle>
+                    </div>
+
+                    {/* Notifications List */}
+                    <div className="flex flex-col gap-3">
+                        {error ? (
+                            <div className="card p-8 text-center">
+                                <div className="flex flex-col items-center gap-3">
+                                    <BellOff size={48} className="text-red-500" />
+                                    <p className="text-red-500 font-semibold">Error: {error}</p>
+                                    <p className="text-sm text-foreground-muted">
+                                        Make sure you&apos;re logged in and the backend server is running.
+                                    </p>
+                                </div>
                             </div>
-                        ))
-                    )}
+                        ) : notifications.length === 0 ? (
+                            <div className="card p-8 text-center">
+                                <div className="flex flex-col items-center gap-3">
+                                    <BellOff size={48} className="text-foreground-muted" />
+                                    <p className="text-foreground-muted text-lg">
+                                        No notifications yet
+                                    </p>
+                                    <p className="text-sm text-foreground-muted">
+                                        You&apos;ll see notifications here when someone interacts with your posts
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            notifications.map((notification) => (
+                                <Notification key={notification.id} notification={notification} />
+                            ))
+                        )}
+                    </div>
                 </div>
-            </main>
+            </div>
         </div>
     );
 }
