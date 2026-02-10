@@ -22,8 +22,15 @@ export default async function PostPage({ params }: PostPageProps) {
         // Fetch the main post
         const post = await postsService.getById(postId);
         
-        // Fetch comments for this post
-        const { data: comments } = await commentsService.list(postId, 50);
+        // Fetch comments for this post with error handling
+        let comments = [];
+        try {
+            const result = await commentsService.list(postId, 50);
+            comments = result?.data || [];
+        } catch (err) {
+            console.error('Failed to load comments:', err);
+            // Continue with empty comments array
+        }
         
         // Check if user is authenticated and get user ID
         const token = await getAuthToken();

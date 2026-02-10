@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { postsService } from '@/services/posts.service';
 import { getAuthToken } from '@/app/actions/auth';
+import { revalidateHomeFeed, revalidatePostPage } from '@/app/actions/posts';
 import { Edit2, Trash2, X, Check } from 'lucide-react';
 import type { Post } from '@/types/post-type';
 
@@ -51,6 +52,11 @@ export default function PostActions({ post, currentUserId }: PostActionsProps) {
             );
 
             setIsEditing(false);
+            
+            // Revalidate caches to show updated post
+            await revalidateHomeFeed();
+            await revalidatePostPage(post.id);
+            
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to update post');
@@ -71,6 +77,9 @@ export default function PostActions({ post, currentUserId }: PostActionsProps) {
             }
 
             await postsService.delete(post.id, token);
+            
+            // Revalidate home feed cache to remove deleted post
+            await revalidateHomeFeed();
             
             // Redirect to home after deletion
             router.push('/home');

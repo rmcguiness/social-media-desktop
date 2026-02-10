@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { postsService } from '@/services/posts.service';
 import { getAuthToken } from '@/app/actions/auth';
+import { revalidateHomeFeed } from '@/app/actions/posts';
 import { Card } from '@/components';
 import { Image as ImageIcon, X } from 'lucide-react';
 
@@ -53,6 +54,9 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
             // Reset form
             setFormData({ title: '', content: '', image: '' });
             setIsExpanded(false);
+            
+            // Revalidate home feed cache to show new post
+            await revalidateHomeFeed();
             
             // Refresh page to show new post
             router.refresh();

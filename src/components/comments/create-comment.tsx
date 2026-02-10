@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { commentsService } from '@/services/comments.service';
 import { getAuthToken } from '@/app/actions/auth';
+import { revalidateHomeFeed, revalidatePostPage } from '@/app/actions/posts';
 import { Send } from 'lucide-react';
 
 interface CreateCommentProps {
@@ -35,6 +36,10 @@ export default function CreateComment({ postId }: CreateCommentProps) {
 
             // Reset form
             setContent('');
+            
+            // Revalidate caches to show new comment and updated count
+            await revalidateHomeFeed();
+            await revalidatePostPage(postId);
             
             // Refresh page to show new comment
             router.refresh();
