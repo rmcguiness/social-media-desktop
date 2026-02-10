@@ -1,9 +1,14 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { ThemeButton } from "@/components";
 import { UserMenu } from "./user-menu";
+import { getAuthToken } from "@/app/actions/auth";
 
-const NavBar = () => {
+const NavBar = async () => {
+    const token = await getAuthToken();
+    const isLoggedIn = !!token;
+
     return (
         <div className="sticky top-0 z-50 h-16 bg-background flex gap-4 justify-between items-center px-4 py-2 border-b border-gray-200 shadow-sm shadow-gray-200">
             <div className="flex items-center gap-2">
@@ -16,7 +21,24 @@ const NavBar = () => {
             </div>
             <div className="flex items-center gap-2">
                 <ThemeButton />
-                <UserMenu />
+                {isLoggedIn ? (
+                    <UserMenu />
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href="/login"
+                            className="px-4 py-2 text-sm font-medium text-foreground hover:text-blue-500 transition-colors"
+                        >
+                            Login
+                        </Link>
+                        <Link
+                            href="/register"
+                            className="px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                        >
+                            Sign Up
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     )
