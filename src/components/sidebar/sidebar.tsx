@@ -50,8 +50,8 @@ const SideBar = () => {
             {/* Sidebar */}
             <aside
                 className={`
-                    fixed md:sticky top-0 md:top-16 left-0 z-40
-                    h-screen md:h-[calc(100vh-4rem)]
+                    fixed md:sticky top-0 left-0 z-40
+                    h-screen md:h-screen
                     bg-background-secondary border-r border-border
                     transition-all duration-300 ease-in-out
                     ${isMobile 

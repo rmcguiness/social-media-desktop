@@ -10,7 +10,7 @@ const NavBar = async () => {
     const isLoggedIn = !!token;
 
     return (
-        <nav className="sticky top-0 z-50 h-16 bg-background-secondary backdrop-blur-md bg-opacity-80 dark:bg-opacity-90 flex gap-2 md:gap-4 justify-between items-center px-3 md:px-6 border-b border-border shadow-sm">
+        <nav className="z-50 h-16 bg-background-secondary backdrop-blur-md bg-opacity-80 dark:bg-opacity-90 flex gap-2 md:gap-4 justify-between items-center px-3 md:px-6 border-b border-border shadow-sm">
             {/* Logo and Title */}
             <Link href="/home" className="flex items-center gap-2 hover:opacity-90 transition-all duration-200 hover:scale-105">
                 <Image 
