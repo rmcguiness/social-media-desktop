@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 
 type PostLinkWrapperProps = {
@@ -9,9 +10,12 @@ type PostLinkWrapperProps = {
 };
 
 export const PostLinkWrapper = ({ postId, children }: PostLinkWrapperProps) => {
+    const pathname = usePathname();
+    
     const handleClick = () => {
-        // Save current scroll position before navigating
-        sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
+        // Save current scroll position and referrer page before navigating
+        sessionStorage.setItem('postReferrerScroll', window.scrollY.toString());
+        sessionStorage.setItem('postReferrerPath', pathname);
     };
 
     return (

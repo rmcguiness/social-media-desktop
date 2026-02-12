@@ -5,11 +5,11 @@ import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 type BackButtonProps = {
-    href?: string;
+    fallbackHref?: string;
     label?: string;
 };
 
-export const BackButton = ({ href = '/home', label = 'Back' }: BackButtonProps) => {
+export const BackButton = ({ fallbackHref = '/home', label = 'Back' }: BackButtonProps) => {
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
 
@@ -18,15 +18,20 @@ export const BackButton = ({ href = '/home', label = 'Back' }: BackButtonProps) 
     }, []);
 
     const handleBack = () => {
-        router.push(href);
+        // Get saved referrer path or use fallback
+        const referrerPath = sessionStorage.getItem('postReferrerPath') || fallbackHref;
+        
+        router.push(referrerPath);
         
         // Restore scroll position after navigation
         if (mounted) {
             setTimeout(() => {
-                const savedPosition = sessionStorage.getItem('homeScrollPosition');
+                const savedPosition = sessionStorage.getItem('postReferrerScroll');
                 if (savedPosition) {
                     window.scrollTo(0, parseInt(savedPosition, 10));
-                    sessionStorage.removeItem('homeScrollPosition');
+                    // Clean up
+                    sessionStorage.removeItem('postReferrerScroll');
+                    sessionStorage.removeItem('postReferrerPath');
                 }
             }, 100);
         }
