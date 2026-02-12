@@ -1,0 +1,7 @@
+.image {
+	position: relative !important;
+}
+.wrapper {
+	position: relative !important;
+	object-fit: contain !important;
+}

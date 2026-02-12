@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/._*": true,
+    "**/.Spotlight-V100": true,
+    "**/.Trashes": true
+  },
+  "search.exclude": {
+    "**/.DS_Store": true,
+    "**/._*": true,
+    "**/.Spotlight-V100": true,
+    "**/.Trashes": true
+  }
+}
