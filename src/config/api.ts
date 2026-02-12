@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
   // Users
   users: '/api/users',
   user: (id: number) => `/api/users/${id}`,
+  userByUsername: (username: string) => `/api/users/username/${username}`,
   
   // Messages
   conversations: '/api/conversations',

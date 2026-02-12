@@ -4,6 +4,7 @@ import { ImageWrapper, Card, PostActions } from '@/components';
 import { LikeButton } from './like-button';
 import { ShareButton } from './share-button';
 import { PostLinkWrapper } from './post-link-wrapper';
+import { UserProfileLink } from './user-profile-link';
 import { MessageCircle } from 'lucide-react';
 import { getAvatarUrl } from '@/lib/avatar';
 
@@ -18,19 +19,27 @@ const Post = ({ post, clickable = true, currentUserId }: PostProps) => {
         <div className="flex flex-col p-4 md:p-5 gap-3">
             {/* Post Header */}
             <div className="flex items-center gap-3">
-                <Image 
-                    src={getAvatarUrl(post.user)} 
-                    alt={post.user.name}
-                    width={40} 
-                    height={40} 
-                    className="rounded-full ring-2 ring-border"
-                />
-                <div className="flex flex-col">
+                <UserProfileLink 
+                    username={post.user.username}
+                    className="hover:opacity-80 transition-opacity"
+                >
+                    <Image 
+                        src={getAvatarUrl(post.user)} 
+                        alt={post.user.name}
+                        width={40} 
+                        height={40} 
+                        className="rounded-full ring-2 ring-border"
+                    />
+                </UserProfileLink>
+                <UserProfileLink 
+                    username={post.user.username}
+                    className="flex flex-col hover:underline"
+                >
                     <h3 className="font-semibold text-foreground hover:text-accent transition-colors">
                         {post.user.name}
                     </h3>
                     <p className="text-xs text-foreground-muted">@{post.user.username}</p>
-                </div>
+                </UserProfileLink>
             </div>
 
             {/* Post Content */}

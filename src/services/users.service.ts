@@ -44,6 +44,16 @@ export const usersService = {
   },
 
   /**
+   * Get a user by username
+   */
+  async byUsername(username: string): Promise<User> {
+    return apiClient.get<User>(API_ENDPOINTS.userByUsername(username), {
+      revalidate: 60,
+      tags: [`user-username-${username}`],
+    });
+  },
+
+  /**
    * Update the authenticated user's profile
    */
   async updateProfile(data: UpdateProfileData, token: string): Promise<MeResponse> {

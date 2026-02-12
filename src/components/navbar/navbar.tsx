@@ -37,9 +37,7 @@ const NavBar = async () => {
             {/* Actions */}
             <div className="flex items-center gap-2 md:gap-3">
                 <ThemeButton />
-                {isLoggedIn ? (
-                    <UserMenu />
-                ) : (
+                {!isLoggedIn && (
                     <div className="flex items-center gap-2">
                         <Link
                             href="/login"

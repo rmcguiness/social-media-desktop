@@ -98,14 +98,20 @@ export async function apiGet<T>(url: string, options?: FetchOptions): Promise<T>
  * Helper for POST requests
  */
 export async function apiPost<T>(url: string, data?: unknown, options?: FetchOptions): Promise<T> {
+  const headers: Record<string, string> = {
+    ...options?.headers,
+  };
+  
+  // Only set Content-Type if we have data to send
+  if (data !== undefined && data !== null) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
   const response = await apiFetch(url, {
     ...options,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-    body: data ? JSON.stringify(data) : undefined,
+    headers,
+    body: data !== undefined && data !== null ? JSON.stringify(data) : undefined,
   });
   
   if (!response.ok) {
@@ -120,14 +126,20 @@ export async function apiPost<T>(url: string, data?: unknown, options?: FetchOpt
  * Helper for PUT requests
  */
 export async function apiPut<T>(url: string, data?: unknown, options?: FetchOptions): Promise<T> {
+  const headers: Record<string, string> = {
+    ...options?.headers,
+  };
+  
+  // Only set Content-Type if we have data to send
+  if (data !== undefined && data !== null) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
   const response = await apiFetch(url, {
     ...options,
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-    body: data ? JSON.stringify(data) : undefined,
+    headers,
+    body: data !== undefined && data !== null ? JSON.stringify(data) : undefined,
   });
   
   if (!response.ok) {
