@@ -1,9 +1,9 @@
 import { Post as PostType } from '@/types/post-type';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ImageWrapper, Card, PostActions } from '@/components';
 import { LikeButton } from './like-button';
 import { ShareButton } from './share-button';
+import { PostLinkWrapper } from './post-link-wrapper';
 import { MessageCircle } from 'lucide-react';
 import { getAvatarUrl } from '@/lib/avatar';
 
@@ -74,9 +74,9 @@ const Post = ({ post, clickable = true, currentUserId }: PostProps) => {
     return (
         <Card className={clickable ? "cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200" : ""}>
             {clickable ? (
-                <Link href={`/posts/${post.id}`} className="block">
+                <PostLinkWrapper postId={post.id}>
                     {content}
-                </Link>
+                </PostLinkWrapper>
             ) : (
                 content
             )}

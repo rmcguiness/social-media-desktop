@@ -1,4 +1,5 @@
 import { Post, PageTitle, CommentsList, CreateComment } from "@/components";
+import { BackButton } from "@/components/ui/back-button";
 import { postsService } from "@/services/posts.service";
 import { commentsService } from "@/services/comments.service";
 import { usersService } from "@/services/users.service";
@@ -53,6 +54,11 @@ export default async function PostPage({ params }: PostPageProps) {
                 <div className="flex gap-6 px-3 md:px-6 py-4 max-w-7xl mx-auto">
                     {/* Main Content */}
                     <div className="flex-1 max-w-2xl mx-auto">
+                        {/* Back Button */}
+                        <div className="mb-4">
+                            <BackButton />
+                        </div>
+                        
                         {/* Header */}
                         <div className="mb-6">
                             <PageTitle title="Post" />
