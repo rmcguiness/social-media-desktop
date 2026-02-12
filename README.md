@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Social Media App - Next.js Full-Stack
+
+Production-grade social media platform built with Next.js 15, Prisma, PostgreSQL, and NextAuth.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Database:** PostgreSQL + Prisma ORM
+- **Auth:** NextAuth v5
+- **Styling:** Tailwind CSS v4
+- **State:** Zustand
+- **Validation:** Zod
+- **TypeScript:** Full type safety
+
+## Architecture
+
+**Full-stack Next.js:**
+- Server Components for data fetching
+- API Routes for REST endpoints
+- Server Actions for mutations
+- Client Components for interactivity
+
+**Why Next.js instead of separate backend?**
+- Single codebase (shared types, no CORS)
+- Faster development (Server Components eliminate API round trips)
+- Simpler deployment (one service)
+- Mobile-ready (can call `/api/*` routes)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20+
+- PostgreSQL running on localhost:5432
+- Database: `social_media_basic`
+
+### Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Generate Prisma Client
+npm run db:generate
+
+# Push schema to database
+npm run db:push
+
+# (Optional) Seed database
+npm run db:seed
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run db:generate    # Generate Prisma Client
+npm run db:push        # Push schema (no migration)
+npm run db:migrate     # Create + apply migration
+npm run db:studio      # Open Prisma Studio GUI
+npm run db:seed        # Seed database with test data
+```
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.local` and update values:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/social_media_basic?schema=public"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-here"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Generate `NEXTAUTH_SECRET`:
+```bash
+openssl rand -base64 32
+```
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/
+│   ├── (auth)/              # Auth pages (login, signup)
+│   ├── (dashboard)/         # Protected routes (feed, profile, settings)
+│   ├── api/                 # API routes
+│   │   ├── auth/            # NextAuth endpoints
+│   │   ├── posts/           # Posts CRUD
+│   │   ├── users/           # Users/profile
+│   │   └── comments/        # Comments
+│   └── actions/             # Server Actions (mutations)
+├── components/              # React components
+├── lib/                     # Utilities
+│   ├── prisma.ts           # Prisma singleton
+│   └── auth.ts             # Auth helpers
+└── types/                  # TypeScript types
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+prisma/
+├── schema.prisma           # Database schema
+├── migrations/             # Migration history
+└── seed.ts                 # Seed script
+```
+
+## Features
+
+### Completed (Phase 1)
+- ✅ User authentication (signup/login)
+- ✅ Create, edit, delete posts
+- ✅ Like/unlike posts
+- ✅ Comments with nested replies
+- ✅ User profiles (edit bio, avatar, cover)
+- ✅ Settings (notifications, privacy, theme)
+- ✅ Infinite scroll
+- ✅ Responsive design (mobile-first)
+- ✅ Dark mode
+
+### In Progress (Phase 2)
+- 🚧 Migration to Next.js full-stack
+- 🚧 NextAuth integration
+- 🚧 Server Components + Server Actions
+
+### Planned (Phase 3+)
+- Security hardening (rate limiting, validation, CSRF)
+- Performance optimization (caching, code splitting)
+- Real-time features (WebSockets, live notifications)
+- Image uploads (Cloudinary)
+- Email verification
+- Follow/unfollow users
+- Direct messaging
+
+## Migration Notes
+
+**2026-02-12:** Consolidated from separate Fastify backend → Next.js full-stack
+
+- Deleted: `backend/` folder (Fastify + half-implemented tests)
+- Moved: Prisma schema/migrations to `frontend/prisma/`
+- Architecture: Server Components + API Routes + Server Actions
+
+See `MIGRATION_PLAN.md` for detailed roadmap.
+
+## Development
+
+```bash
+npm run dev        # Start dev server (localhost:3000)
+npm run build      # Production build
+npm run start      # Production server
+npm run lint       # ESLint
+```
+
+## Deployment
+
+**Recommended platforms:**
+- Vercel (zero-config Next.js hosting)
+- Railway (PostgreSQL + Next.js)
+- Fly.io (full control)
+
+**Environment variables required:**
+- `DATABASE_URL`
+- `NEXTAUTH_URL`
+- `NEXTAUTH_SECRET`
+
+## Contributing
+
+Follow SOLID principles and Next.js best practices. See `docs/` for architecture decisions.
+
+## License
+
+MIT
