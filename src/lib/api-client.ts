@@ -51,7 +51,21 @@ export async function apiFetch(url: string, options: FetchOptions = {}) {
   }
   
   // Make initial request
-  const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+  // On server-side, use absolute URL; on client-side, use relative URL
+  const isServer = typeof window === 'undefined';
+  let fullUrl: string;
+  
+  if (url.startsWith('http')) {
+    fullUrl = url;
+  } else if (isServer) {
+    // Server-side: use absolute URL
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    fullUrl = `${baseUrl}${url}`;
+  } else {
+    // Client-side: use relative URL (or API_BASE_URL if configured)
+    fullUrl = API_BASE_URL ? `${API_BASE_URL}${url}` : url;
+  }
+  
   let response = await fetch(fullUrl, {
     ...fetchOptions,
     headers,
