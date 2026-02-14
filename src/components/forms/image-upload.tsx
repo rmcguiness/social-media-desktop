@@ -67,7 +67,7 @@ export function ImageUpload({
         ? '/api/profile/avatar' 
         : '/api/profile/cover';
 
-      const response = await fetch(`http://localhost:4000${endpoint}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -18,7 +18,7 @@ export function PostFeed({ initialPosts, initialCursor }: PostFeedProps) {
         });
         
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/posts?${params.toString()}`
+            `/api/posts?${params.toString()}`
         );
         
         if (!response.ok) {
