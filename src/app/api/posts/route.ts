@@ -55,19 +55,47 @@ export async function GET(request: NextRequest) {
 // POST /api/posts - Create post
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { content, userId } = body;
-
-    if (!content || !userId) {
+    // Extract and verify auth token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'Content and userId are required' },
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify token and extract user ID
+    const { verifyToken } = await import('@/lib/jwt');
+    let userId: number;
+    
+    try {
+      const payload = verifyToken(token);
+      userId = payload.userId;
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { title, content, image, parentId } = body;
+
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: 'Title and content are required' },
         { status: 400 }
       );
     }
 
     const post = await prisma.post.create({
       data: {
+        title,
         content,
+        image: image || null,
+        parentId: parentId || null,
         userId,
       },
       include: {
@@ -77,6 +105,11 @@ export async function POST(request: NextRequest) {
             username: true,
             name: true,
             image: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
           },
         },
         _count: {

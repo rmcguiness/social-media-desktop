@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
+import { signAccessToken, signRefreshToken } from '@/lib/jwt';
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,10 +55,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Generate JWT tokens
+    const tokenPayload = {
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const accessToken = signAccessToken(tokenPayload);
+    const refreshToken = signRefreshToken(tokenPayload);
+
     return NextResponse.json({
       user,
-      // TODO: Generate JWT token here
-      token: 'mock-token-replace-with-jwt',
+      accessToken,
+      refreshToken,
     }, { status: 201 });
   } catch (error) {
     console.error('Registration error:', error);
