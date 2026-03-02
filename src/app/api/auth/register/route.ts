@@ -2,18 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { signAccessToken, signRefreshToken } from '@/lib/jwt';
+import { registerSchema, validateInput } from '@/lib/validation';
+import { handleApiError } from '@/lib/api-error';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, username, name, password } = body;
-
-    if (!email || !username || !name || !password) {
+    
+    // Validate input with Zod
+    const validation = validateInput(registerSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Validation failed', details: validation.errors },
         { status: 400 }
       );
     }
+
+    const { email, username, name, password } = validation.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findFirst({
@@ -71,10 +76,6 @@ export async function POST(request: NextRequest) {
       refreshToken,
     }, { status: 201 });
   } catch (error) {
-    console.error('Registration error:', error);
-    return NextResponse.json(
-      { error: 'Registration failed' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Registration', 500);
   }
 }

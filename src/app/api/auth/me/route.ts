@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken, extractTokenFromHeader } from '@/lib/jwt';
+import { handleApiError } from '@/lib/api-error';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +17,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify token and extract payload
-    const payload = verifyToken(token);
+    let payload;
+    try {
+      payload = verifyToken(token);
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
+        { status: 401 }
+      );
+    }
 
     // Fetch user from database
     const user = await prisma.user.findUnique({
@@ -43,10 +52,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ user });
   } catch (error) {
-    console.error('Auth error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Authentication failed' },
-      { status: 401 }
-    );
+    return handleApiError(error, 'Auth check', 401);
   }
 }

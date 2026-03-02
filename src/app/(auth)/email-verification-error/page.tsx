@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { XCircle, RefreshCw } from 'lucide-react';
 
-export default function EmailVerificationErrorPage({
+export default async function EmailVerificationErrorPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
-  const errorMessage = searchParams.error || 'Email verification failed';
+  const params = await searchParams;
+  const errorMessage = params.error || 'Email verification failed';
   const isExpired = errorMessage.toLowerCase().includes('expired');
 
   return (

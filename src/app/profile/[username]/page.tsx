@@ -10,9 +10,9 @@ import { getAuthToken } from "@/app/actions/auth";
 import { notFound } from "next/navigation";
 
 type ProfilePageProps = {
-    params: {
+    params: Promise<{
         username: string;
-    };
+    }>;
 };
 
 export default async function UserProfile({ params }: ProfilePageProps) {

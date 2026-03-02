@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/api-error';
 
 // GET /api/users/[id] - Get user by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = parseInt(params.id);
+    const { id } = await params;
+    const userId = parseInt(id);
 
-    if (isNaN(userId)) {
+    if (isNaN(userId) || userId <= 0) {
       return NextResponse.json(
         { error: 'Invalid user ID' },
         { status: 400 }
@@ -44,10 +46,6 @@ export async function GET(
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch user' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Fetch user', 500);
   }
 }

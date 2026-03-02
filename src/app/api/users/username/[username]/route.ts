@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/api-error';
 
 // GET /api/users/username/[username] - Get user by username
 export async function GET(
   request: NextRequest,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   try {
-    const { username } = params;
+    const { username } = await params;
+
+    // Basic validation
+    if (!username || username.length > 30) {
+      return NextResponse.json(
+        { error: 'Invalid username' },
+        { status: 400 }
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: { username },
@@ -37,10 +46,6 @@ export async function GET(
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch user' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Fetch user by username', 500);
   }
 }

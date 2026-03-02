@@ -2,18 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { signAccessToken, signRefreshToken } from '@/lib/jwt';
+import { loginSchema, validateInput } from '@/lib/validation';
+import { handleApiError } from '@/lib/api-error';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { emailOrUsername, password } = body;
-
-    if (!emailOrUsername || !password) {
+    
+    // Validate input with Zod
+    const validation = validateInput(loginSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Email/username and password are required' },
+        { error: 'Validation failed', details: validation.errors },
         { status: 400 }
       );
     }
+
+    const { emailOrUsername, password } = validation.data;
 
     // Find user by email or username
     const user = await prisma.user.findFirst({
@@ -71,10 +76,6 @@ export async function POST(request: NextRequest) {
       refreshToken,
     });
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Login failed' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Login', 500);
   }
 }
