@@ -96,14 +96,18 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                 {/* Profile Header with Cover */}
                 <Card className="overflow-hidden mb-6">
                     {/* Cover Photo */}
-                    <div 
-                        className="h-32 md:h-48 bg-gradient-to-r from-accent to-accent/60"
-                        style={profileUser.coverImage ? {
-                            backgroundImage: `url(${profileUser.coverImage})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        } : undefined}
-                    />
+                    <div className="relative h-32 md:h-48 bg-gradient-to-r from-accent to-accent/60">
+                        {profileUser.coverImage && (
+                            <Image
+                                src={profileUser.coverImage}
+                                alt={`${profileUser.name}'s cover photo`}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 896px"
+                                className="object-cover"
+                                priority
+                            />
+                        )}
+                    </div>
                     
                     {/* Profile Info */}
                     <div className="px-6 pb-6">
@@ -114,6 +118,8 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                                 alt={profileUser.name}
                                 width={120}
                                 height={120}
+                                sizes="120px"
+                                priority
                                 className="rounded-full ring-4 ring-card"
                             />
                         </div>

@@ -86,12 +86,13 @@ const Comment = ({ comment, postId, currentUserId, depth = 0 }: CommentProps) =>
         <div className={`flex gap-3 py-2 ${depth > 0 ? 'ml-12' : ''}`}>
             {/* User Avatar */}
             <div className="flex-shrink-0">
-                <Image 
-                    src={getAvatarUrl(user)} 
-                    alt={user.name} 
-                    width={depth > 0 ? 32 : 40} 
-                    height={depth > 0 ? 32 : 40} 
-                    className="rounded-full ring-2 ring-border" 
+                <Image
+                    src={getAvatarUrl(user)}
+                    alt={user.name}
+                    width={depth > 0 ? 32 : 40}
+                    height={depth > 0 ? 32 : 40}
+                    sizes="40px"
+                    className="rounded-full ring-2 ring-border"
                 />
             </div>
             
