@@ -13,12 +13,14 @@ const NavBar = async () => {
         <nav className="z-50 h-16 bg-background-secondary backdrop-blur-md bg-opacity-80 dark:bg-opacity-90 flex gap-2 md:gap-4 justify-between items-center px-3 md:px-6 border-b border-border shadow-sm">
             {/* Logo and Title */}
             <Link href="/home" className="flex items-center gap-2 hover:opacity-90 transition-all duration-200 hover:scale-105">
-                <Image 
-                    src="/favicon.ico" 
-                    alt="logo" 
-                    className="w-8 h-8 md:w-10 md:h-10 drop-shadow-md" 
-                    width={40} 
-                    height={40} 
+                <Image
+                    src="/favicon.ico"
+                    alt="logo"
+                    className="w-8 h-8 md:w-10 md:h-10 drop-shadow-md"
+                    width={40}
+                    height={40}
+                    sizes="40px"
+                    priority
                 />
                 <h1 className="text-lg md:text-2xl font-bold text-nowrap hidden sm:block gradient-text drop-shadow-sm">
                     Social Media

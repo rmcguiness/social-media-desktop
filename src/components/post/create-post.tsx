@@ -23,6 +23,16 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const handleExpand = async () => {
+        // Check authentication before expanding
+        const token = await getAuthToken();
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        setIsExpanded(true);
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({
             ...prev,
@@ -82,7 +92,7 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
                 {!isExpanded ? (
                     // Collapsed state - just a prompt
                     <button
-                        onClick={() => setIsExpanded(true)}
+                        onClick={handleExpand}
                         className="w-full text-left px-4 py-3 rounded-lg bg-background hover:bg-opacity-50 text-foreground-muted transition-all duration-200 border border-border"
                     >
                         What's on your mind?

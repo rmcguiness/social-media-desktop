@@ -1,4 +1,5 @@
-import { Post, PageTitle, CommentsList, CreateComment } from "@/components";
+import { Post, PageTitle } from "@/components";
+import { CommentsListSkeleton } from "@/components/ui/skeletons";
 import { BackButton } from "@/components/ui/back-button";
 import { postsService } from "@/services/posts.service";
 import { commentsService } from "@/services/comments.service";
@@ -6,6 +7,18 @@ import { usersService } from "@/services/users.service";
 import { getAuthToken } from "@/app/actions/auth";
 import { notFound } from "next/navigation";
 import { Card } from "@/components";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const CommentsList = dynamic(
+    () => import("@/components/comments/comments-list").then((mod) => ({ default: mod.CommentsList })),
+    { loading: () => <CommentsListSkeleton /> }
+);
+
+const CreateComment = dynamic(
+    () => import("@/components/comments/create-comment"),
+    { ssr: false }
+);
 
 type PostPageProps = {
     params: Promise<{ id: string }>;
@@ -76,15 +89,17 @@ export default async function PostPage({ params }: PostPageProps) {
                                 
                                 {/* Comment Form - Only show when authenticated */}
                                 {isAuthenticated && <CreateComment postId={postId} />}
-                                
+
                                 {/* Comments List with Pagination */}
                                 <div className="mt-6">
-                                    <CommentsList
-                                        postId={postId}
-                                        initialComments={comments}
-                                        initialNextCursor={nextCursor}
-                                        currentUserId={currentUserId}
-                                    />
+                                    <Suspense fallback={<CommentsListSkeleton />}>
+                                        <CommentsList
+                                            postId={postId}
+                                            initialComments={comments}
+                                            initialNextCursor={nextCursor}
+                                            currentUserId={currentUserId}
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
                         </Card>

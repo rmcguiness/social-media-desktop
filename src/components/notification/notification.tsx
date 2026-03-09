@@ -86,6 +86,7 @@ const Notification = ({ notification }: NotificationProps) => {
                             alt={actor.name}
                             width={48}
                             height={48}
+                            sizes="48px"
                             className="rounded-full ring-2 ring-border"
                         />
                     </div>

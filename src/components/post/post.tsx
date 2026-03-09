@@ -23,11 +23,12 @@ const Post = ({ post, clickable = true, currentUserId }: PostProps) => {
                     username={post.user.username}
                     className="hover:opacity-80 transition-opacity"
                 >
-                    <Image 
-                        src={getAvatarUrl(post.user)} 
+                    <Image
+                        src={getAvatarUrl(post.user)}
                         alt={post.user.name}
-                        width={40} 
-                        height={40} 
+                        width={40}
+                        height={40}
+                        sizes="40px"
                         className="rounded-full ring-2 ring-border"
                     />
                 </UserProfileLink>

@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
+import { signAccessToken, signRefreshToken } from '@/lib/jwt';
+import { registerSchema, validateInput } from '@/lib/validation';
+import { handleApiError } from '@/lib/api-error';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, username, name, password } = body;
-
-    if (!email || !username || !name || !password) {
+    
+    // Validate input with Zod
+    const validation = validateInput(registerSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Validation failed', details: validation.errors },
         { status: 400 }
       );
     }
+
+    const { email, username, name, password } = validation.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findFirst({
@@ -54,16 +60,22 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Generate JWT tokens
+    const tokenPayload = {
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const accessToken = signAccessToken(tokenPayload);
+    const refreshToken = signRefreshToken(tokenPayload);
+
     return NextResponse.json({
       user,
-      // TODO: Generate JWT token here
-      token: 'mock-token-replace-with-jwt',
+      accessToken,
+      refreshToken,
     }, { status: 201 });
   } catch (error) {
-    console.error('Registration error:', error);
-    return NextResponse.json(
-      { error: 'Registration failed' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Registration', 500);
   }
 }
