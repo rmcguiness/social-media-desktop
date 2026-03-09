@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError } from '@/lib/api-error';
+import { usersCache } from '@/lib/api-cache';
+
+const USERS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 // GET /api/users/[id] - Get user by ID
 export async function GET(
@@ -16,6 +19,12 @@ export async function GET(
         { error: 'Invalid user ID' },
         { status: 400 }
       );
+    }
+
+    const cacheKey = `user:${userId}`;
+    const cached = usersCache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached);
     }
 
     const user = await prisma.user.findUnique({
@@ -44,6 +53,7 @@ export async function GET(
       );
     }
 
+    usersCache.set(cacheKey, user, USERS_CACHE_TTL);
     return NextResponse.json(user);
   } catch (error) {
     return handleApiError(error, 'Fetch user', 500);

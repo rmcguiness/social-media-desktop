@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createPostSchema, validateInput } from '@/lib/validation';
 import { handleApiError } from '@/lib/api-error';
+import { postsCache } from '@/lib/api-cache';
+
+const POSTS_CACHE_TTL = 30_000; // 30 seconds
 
 // GET /api/posts - List posts
 export async function GET(request: NextRequest) {
@@ -9,6 +12,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '20');
     const cursor = searchParams.get('cursor');
+
+    const cacheKey = `posts:${limit}:${cursor ?? 'none'}`;
+    const cached = postsCache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached);
+    }
 
     const posts = await prisma.post.findMany({
       take: limit,
@@ -44,6 +53,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    postsCache.set(cacheKey, posts, POSTS_CACHE_TTL);
     return NextResponse.json(posts);
   } catch (error) {
     return handleApiError(error, 'Fetch posts', 500);
@@ -121,6 +131,9 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Invalidate posts feed cache so new post appears
+    postsCache.invalidateByPrefix('posts:');
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
