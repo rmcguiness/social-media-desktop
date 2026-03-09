@@ -3,8 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Card, EditProfileForm } from "@/components";
+import { Card } from "@/components";
+import { EditProfileFormSkeleton } from "@/components/ui/skeletons";
 import { User as UserIcon, Bell, Shield, Palette, LogOut, Sun, Moon, Monitor } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const EditProfileForm = dynamic(
+    () => import("@/components/profile/edit-profile-form").then((mod) => ({ default: mod.EditProfileForm })),
+    { loading: () => <EditProfileFormSkeleton /> }
+);
 import { clearAuthToken } from '@/app/actions/auth';
 import { User } from '@/types/user-type';
 import { settingsService, type NotificationPreferences, type PrivacySettings } from '@/services/settings.service';

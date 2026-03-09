@@ -1,7 +1,15 @@
-import { PageTitle, Card, UserPostsList } from "@/components";
+import { PageTitle, Card } from "@/components";
+import { PostFeedSkeleton } from "@/components/ui/skeletons";
 import { usersService } from "@/services/users.service";
 import { postsService } from "@/services/posts.service";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const UserPostsList = dynamic(
+    () => import("@/components/profile/user-posts-list").then((mod) => ({ default: mod.UserPostsList })),
+    { loading: () => <PostFeedSkeleton /> }
+);
 import Link from "next/link";
 import { User } from "@/types/user-type";
 import { getAvatarUrl } from "@/lib/avatar";
@@ -144,11 +152,13 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                     <h2 className="text-xl font-bold mb-4">
                         {isOwnProfile ? 'Your Posts' : `${profileUser.name}'s Posts`}
                     </h2>
-                    <UserPostsList
-                        userId={profileUser.id}
-                        initialPosts={userPostsData.data}
-                        initialNextCursor={userPostsData.meta.nextCursor}
-                    />
+                    <Suspense fallback={<PostFeedSkeleton />}>
+                        <UserPostsList
+                            userId={profileUser.id}
+                            initialPosts={userPostsData.data}
+                            initialNextCursor={userPostsData.meta.nextCursor}
+                        />
+                    </Suspense>
                 </div>
             </main>
         </div>

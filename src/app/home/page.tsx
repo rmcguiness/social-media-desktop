@@ -1,8 +1,20 @@
-import { PageTitle, CreatePost, PostFeed } from "@/components";
+import { PageTitle } from "@/components";
+import { PostFeedSkeleton, CreatePostSkeleton } from "@/components/ui/skeletons";
 import { Filter } from "lucide-react";
 import RightBar from "./_components/right-bar";
 import { postsService } from "@/services/posts.service";
 import { getAuthToken } from "@/app/actions/auth";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const CreatePost = dynamic(() => import("@/components/post/create-post"), {
+    loading: () => <CreatePostSkeleton />,
+});
+
+const PostFeed = dynamic(
+    () => import("@/components/post/post-feed").then((mod) => ({ default: mod.PostFeed })),
+    { loading: () => <PostFeedSkeleton /> }
+);
 
 export default async function Home() {
     // Fetch data on the server
@@ -29,10 +41,16 @@ export default async function Home() {
                     </div>
 
                     {/* Create Post - Only show when authenticated */}
-                    {isAuthenticated && <CreatePost />}
+                    {isAuthenticated && (
+                        <Suspense fallback={<CreatePostSkeleton />}>
+                            <CreatePost />
+                        </Suspense>
+                    )}
 
                     {/* Posts Feed with Infinite Scroll */}
-                    <PostFeed initialPosts={posts} initialCursor={nextCursor} />
+                    <Suspense fallback={<PostFeedSkeleton />}>
+                        <PostFeed initialPosts={posts} initialCursor={nextCursor} />
+                    </Suspense>
                 </div>
 
                 {/* Right Sidebar - Hidden on mobile */}
