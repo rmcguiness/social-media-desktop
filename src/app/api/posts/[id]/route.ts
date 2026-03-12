@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError } from '@/lib/api-error';
+import { postsCache } from '@/lib/api-cache';
+
+const SINGLE_POST_CACHE_TTL = 60_000; // 1 minute
 
 // GET /api/posts/[id] - Get single post
 export async function GET(
@@ -16,6 +19,17 @@ export async function GET(
         { error: 'Invalid post ID' },
         { status: 400 }
       );
+    }
+
+    // Check cache first
+    const cacheKey = `post:${postId}`;
+    const cached = postsCache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        },
+      });
     }
 
     const post = await prisma.post.findUnique({
@@ -65,7 +79,14 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(post);
+    // Cache the result
+    postsCache.set(cacheKey, post, SINGLE_POST_CACHE_TTL);
+    
+    return NextResponse.json(post, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+    });
   } catch (error) {
     return handleApiError(error, 'Fetch post', 500);
   }

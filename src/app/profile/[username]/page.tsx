@@ -12,6 +12,7 @@ const UserPostsList = dynamic(
 );
 import Link from "next/link";
 import { User } from "@/types/user-type";
+import { Post } from "@/types/post-type";
 import { getAvatarUrl } from "@/lib/avatar";
 import { Settings, UserPlus, ArrowLeft } from "lucide-react";
 import { getAuthToken } from "@/app/actions/auth";
@@ -30,7 +31,7 @@ export default async function UserProfile({ params }: ProfilePageProps) {
     
     let currentUser: User | null = null;
     let profileUser: User | null = null;
-    let userPostsData: { data: any[]; meta: { nextCursor: number | null } } = {
+    let userPostsData: { data: Post[]; meta: { nextCursor: number | null } } = {
         data: [],
         meta: { nextCursor: null },
     };

@@ -18,6 +18,7 @@ export async function apiFetch(url: string, options: FetchOptions = {}) {
   // Get access token from Zustand store (imported dynamically to avoid circular deps)
   const getAccessToken = () => {
     if (typeof window === 'undefined') return null;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { useAuth } = require('@/hooks/useAuth');
     return useAuth.getState().accessToken;
   };
@@ -30,6 +31,7 @@ export async function apiFetch(url: string, options: FetchOptions = {}) {
     
     refreshPromise = (async () => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { useAuth } = require('@/hooks/useAuth');
         await useAuth.getState().refreshAccessToken();
         return useAuth.getState().accessToken || '';
@@ -112,9 +114,18 @@ export async function apiGet<T>(url: string, options?: FetchOptions): Promise<T>
  * Helper for POST requests
  */
 export async function apiPost<T>(url: string, data?: unknown, options?: FetchOptions): Promise<T> {
-  const headers: Record<string, string> = {
-    ...options?.headers,
-  };
+  const headers: Record<string, string> = {};
+  
+  // Copy headers from options if present (handle Headers object or plain object)
+  if (options?.headers) {
+    if (options.headers instanceof Headers) {
+      options.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+    } else if (typeof options.headers === 'object') {
+      Object.assign(headers, options.headers);
+    }
+  }
   
   // Only set Content-Type if we have data to send
   if (data !== undefined && data !== null) {
@@ -140,9 +151,18 @@ export async function apiPost<T>(url: string, data?: unknown, options?: FetchOpt
  * Helper for PUT requests
  */
 export async function apiPut<T>(url: string, data?: unknown, options?: FetchOptions): Promise<T> {
-  const headers: Record<string, string> = {
-    ...options?.headers,
-  };
+  const headers: Record<string, string> = {};
+  
+  // Copy headers from options if present (handle Headers object or plain object)
+  if (options?.headers) {
+    if (options.headers instanceof Headers) {
+      options.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+    } else if (typeof options.headers === 'object') {
+      Object.assign(headers, options.headers);
+    }
+  }
   
   // Only set Content-Type if we have data to send
   if (data !== undefined && data !== null) {
@@ -179,11 +199,49 @@ export async function apiDelete<T>(url: string, options?: FetchOptions): Promise
 }
 
 /**
+ * Helper for PATCH requests
+ */
+export async function apiPatch<T>(url: string, data?: unknown, options?: FetchOptions): Promise<T> {
+  const headers: Record<string, string> = {};
+  
+  // Copy headers from options if present (handle Headers object or plain object)
+  if (options?.headers) {
+    if (options.headers instanceof Headers) {
+      options.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+    } else if (typeof options.headers === 'object') {
+      Object.assign(headers, options.headers);
+    }
+  }
+  
+  // Only set Content-Type if we have data to send
+  if (data !== undefined && data !== null) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
+  const response = await apiFetch(url, {
+    ...options,
+    method: 'PATCH',
+    headers,
+    body: data !== undefined && data !== null ? JSON.stringify(data) : undefined,
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message || 'Request failed');
+  }
+  
+  return response.json();
+}
+
+/**
  * API Client object with REST methods
  */
 export const apiClient = {
   get: apiGet,
   post: apiPost,
   put: apiPut,
+  patch: apiPatch,
   delete: apiDelete,
 };

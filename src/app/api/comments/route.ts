@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createCommentSchema, validateInput } from '@/lib/validation';
 import { handleApiError } from '@/lib/api-error';
+import { commentsCache } from '@/lib/api-cache';
+
+const COMMENTS_CACHE_TTL = 30_000; // 30 seconds
 
 // GET /api/comments - List comments
 export async function GET(request: NextRequest) {
@@ -24,6 +27,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Check cache first
+    const cacheKey = `comments:${parsedPostId}`;
+    const cached = commentsCache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+        },
+      });
+    }
+
     const comments = await prisma.comment.findMany({
       where: {
         postId: parsedPostId,
@@ -43,7 +57,14 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(comments);
+    // Cache the result
+    commentsCache.set(cacheKey, comments, COMMENTS_CACHE_TTL);
+    
+    return NextResponse.json(comments, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+      },
+    });
   } catch (error) {
     return handleApiError(error, 'Fetch comments', 500);
   }
@@ -116,6 +137,9 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Invalidate comments cache for this post
+    commentsCache.invalidate(`comments:${postId}`);
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {

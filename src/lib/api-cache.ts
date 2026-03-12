@@ -38,3 +38,4 @@ export class ApiCache {
 
 export const postsCache = new ApiCache();
 export const usersCache = new ApiCache();
+export const commentsCache = new ApiCache();

@@ -309,7 +309,7 @@ export function SettingsContent({ user, token, isAuthenticated }: SettingsConten
                                             name="allowDirectMessages"
                                             value="everyone"
                                             checked={privacySettings.allowDirectMessages === 'everyone'}
-                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as any)}
+                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as 'everyone' | 'following' | 'nobody')}
                                             disabled={loadingSettings || savingSettings}
                                             className="w-4 h-4 text-accent"
                                         />
@@ -321,7 +321,7 @@ export function SettingsContent({ user, token, isAuthenticated }: SettingsConten
                                             name="allowDirectMessages"
                                             value="following"
                                             checked={privacySettings.allowDirectMessages === 'following'}
-                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as any)}
+                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as 'everyone' | 'following' | 'nobody')}
                                             disabled={loadingSettings || savingSettings}
                                             className="w-4 h-4 text-accent"
                                         />
@@ -333,7 +333,7 @@ export function SettingsContent({ user, token, isAuthenticated }: SettingsConten
                                             name="allowDirectMessages"
                                             value="nobody"
                                             checked={privacySettings.allowDirectMessages === 'nobody'}
-                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as any)}
+                                            onChange={(e) => updatePrivacySetting('allowDirectMessages', e.target.value as 'everyone' | 'following' | 'nobody')}
                                             disabled={loadingSettings || savingSettings}
                                             className="w-4 h-4 text-accent"
                                         />

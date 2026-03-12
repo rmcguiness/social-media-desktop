@@ -16,7 +16,11 @@ export async function GET(request: NextRequest) {
     const cacheKey = `posts:${limit}:${cursor ?? 'none'}`;
     const cached = postsCache.get(cacheKey);
     if (cached) {
-      return NextResponse.json(cached);
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+        },
+      });
     }
 
     const posts = await prisma.post.findMany({
@@ -54,7 +58,11 @@ export async function GET(request: NextRequest) {
     });
 
     postsCache.set(cacheKey, posts, POSTS_CACHE_TTL);
-    return NextResponse.json(posts);
+    return NextResponse.json(posts, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+      },
+    });
   } catch (error) {
     return handleApiError(error, 'Fetch posts', 500);
   }

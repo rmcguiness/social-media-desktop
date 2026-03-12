@@ -86,7 +86,7 @@ export function ShareButton({ postId, shares }: ShareButtonProps) {
                             )}
                         </button>
                         
-                        {typeof navigator !== 'undefined' && navigator.share && (
+                        {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
                             <button
                                 onClick={handleNativeShare}
                                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-background transition-colors text-left border-t border-border"

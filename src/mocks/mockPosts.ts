@@ -19,9 +19,12 @@ export const mockPosts: Post[] = [
 		likes: 5,
 		comments: 0,
 		shares: 0,
+		likedByMe: false,
 		user: {
 			id: index + 4,
 			name: `User ${index + 1}`,
+			username: `user${index + 1}`,
+			email: `user${index + 1}@example.com`,
 			image: `https://picsum.photos/id/${randomInt(2, 50)}/200`,
 		},
 	})),

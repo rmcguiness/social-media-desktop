@@ -1,4 +1,4 @@
-import { Notification } from '@/types/notifcation-type';
+import { Notification } from '@/types/notification-type';
 
 export const mockNotifications: Notification[] = [
 	{
@@ -8,6 +8,8 @@ export const mockNotifications: Notification[] = [
 			user: {
 				id: 1,
 				name: 'John Doe',
+				username: 'johndoe',
+				email: 'john@example.com',
 				image: 'https://via.placeholder.com/150',
 			},
 			time: new Date(),
@@ -20,6 +22,8 @@ export const mockNotifications: Notification[] = [
 			user: {
 				id: 2,
 				name: 'Jane Doe',
+				username: 'janedoe',
+				email: 'jane@example.com',
 				image: 'https://via.placeholder.com/150',
 			},
 			time: new Date(),
@@ -32,6 +36,8 @@ export const mockNotifications: Notification[] = [
 			user: {
 				id: 3,
 				name: 'Jim Doe',
+				username: 'jimdoe',
+				email: 'jim@example.com',
 				image: 'https://via.placeholder.com/150',
 			},
 			time: new Date(),
@@ -44,6 +50,8 @@ export const mockNotifications: Notification[] = [
 			user: {
 				id: 4,
 				name: 'Jim Doe',
+				username: 'jimdoe2',
+				email: 'jim2@example.com',
 				image: 'https://via.placeholder.com/150',
 			},
 			time: new Date(),

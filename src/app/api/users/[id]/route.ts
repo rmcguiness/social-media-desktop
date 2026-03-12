@@ -24,7 +24,11 @@ export async function GET(
     const cacheKey = `user:${userId}`;
     const cached = usersCache.get(cacheKey);
     if (cached) {
-      return NextResponse.json(cached);
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      });
     }
 
     const user = await prisma.user.findUnique({
@@ -54,7 +58,11 @@ export async function GET(
     }
 
     usersCache.set(cacheKey, user, USERS_CACHE_TTL);
-    return NextResponse.json(user);
+    return NextResponse.json(user, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     return handleApiError(error, 'Fetch user', 500);
   }
