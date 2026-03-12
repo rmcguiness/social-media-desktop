@@ -15,7 +15,7 @@ export default function EmailConfirmedPage() {
 
           {/* Heading */}
           <h1 className="text-3xl font-bold text-foreground mb-3">
-            You're all set!
+            You&apos;re all set!
           </h1>
 
           {/* Description */}
@@ -26,7 +26,7 @@ export default function EmailConfirmedPage() {
           {/* What's next section */}
           <div className="bg-background rounded-lg p-6 mb-8 text-left">
             <h2 className="text-lg font-semibold text-foreground mb-3">
-              What's next?
+              What&apos;s next?
             </h2>
             <ul className="space-y-2 text-sm text-foreground-muted">
               <li className="flex items-start gap-2">

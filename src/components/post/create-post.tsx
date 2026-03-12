@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { postsService } from '@/services/posts.service';
 import { getAuthToken } from '@/app/actions/auth';
 import { revalidateHomeFeed } from '@/app/actions/posts';
@@ -22,6 +23,16 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const handleExpand = async () => {
+        // Check authentication before expanding
+        const token = await getAuthToken();
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        setIsExpanded(true);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({
@@ -82,10 +93,10 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
                 {!isExpanded ? (
                     // Collapsed state - just a prompt
                     <button
-                        onClick={() => setIsExpanded(true)}
+                        onClick={handleExpand}
                         className="w-full text-left px-4 py-3 rounded-lg bg-background hover:bg-opacity-50 text-foreground-muted transition-all duration-200 border border-border"
                     >
-                        What's on your mind?
+                        What&apos;s on your mind?
                     </button>
                 ) : (
                     // Expanded state - full form
@@ -142,17 +153,20 @@ export default function CreatePost({ onSuccess }: CreatePostProps) {
                         </div>
 
                         {formData.image && (
-                            <div className="relative rounded-lg overflow-hidden border border-border">
-                                <img
+                            <div className="relative rounded-lg overflow-hidden border border-border h-48">
+                                <Image
                                     src={formData.image}
                                     alt="Preview"
-                                    className="w-full h-48 object-cover"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 600px"
+                                    className="object-cover"
+                                    unoptimized
                                     onError={() => setFormData(prev => ({ ...prev, image: '' }))}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
-                                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 text-white transition-all"
+                                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 text-white transition-all z-10"
                                 >
                                     <X size={16} />
                                 </button>

@@ -9,7 +9,7 @@ export default async function Notifications() {
     let isAuthenticated = !!token;
     
     let notifications: NotificationType[] = [];
-    let error: string | null = null;
+    const error: string | null = null;
 
     if (isAuthenticated) {
         try {

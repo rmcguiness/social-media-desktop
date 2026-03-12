@@ -1,3 +1,4 @@
+// Empty string = use relative URLs (same domain as Next.js)
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export const API_ENDPOINTS = {

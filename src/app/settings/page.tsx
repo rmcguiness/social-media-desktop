@@ -1,5 +1,5 @@
-import { PageTitle, Card, EditProfileForm } from "@/components";
-import { User, Bell, Shield, Palette, LogOut, LogIn } from "lucide-react";
+import { PageTitle, Card } from "@/components";
+import { LogIn } from "lucide-react";
 import { getAuthToken } from "@/app/actions/auth";
 import { usersService } from "@/services/users.service";
 import { SettingsContent } from "./_components/settings-content";

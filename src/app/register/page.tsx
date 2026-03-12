@@ -73,7 +73,7 @@ export default function RegisterPage() {
                         </h1>
 
                         <p className="text-foreground-muted text-lg mb-6">
-                            We've sent a verification link to{' '}
+                            We&apos;ve sent a verification link to{' '}
                             <span className="font-semibold text-foreground">{registeredEmail}</span>
                         </p>
 
@@ -91,7 +91,7 @@ export default function RegisterPage() {
 
                         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
                             <p className="text-sm text-yellow-800 dark:text-yellow-300">
-                                <strong>Didn't receive the email?</strong> Check your spam folder or wait a few minutes. The link expires in 15 minutes.
+                                <strong>Didn&apos;t receive the email?</strong> Check your spam folder or wait a few minutes. The link expires in 15 minutes.
                             </p>
                         </div>
 

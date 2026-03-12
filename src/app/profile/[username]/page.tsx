@@ -1,18 +1,27 @@
-import { PageTitle, Card, UserPostsList } from "@/components";
+import { PageTitle, Card } from "@/components";
+import { PostFeedSkeleton } from "@/components/ui/skeletons";
 import { usersService } from "@/services/users.service";
 import { postsService } from "@/services/posts.service";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+const UserPostsList = dynamic(
+    () => import("@/components/profile/user-posts-list").then((mod) => ({ default: mod.UserPostsList })),
+    { loading: () => <PostFeedSkeleton /> }
+);
 import Link from "next/link";
 import { User } from "@/types/user-type";
+import { Post } from "@/types/post-type";
 import { getAvatarUrl } from "@/lib/avatar";
 import { Settings, UserPlus, ArrowLeft } from "lucide-react";
 import { getAuthToken } from "@/app/actions/auth";
 import { notFound } from "next/navigation";
 
 type ProfilePageProps = {
-    params: {
+    params: Promise<{
         username: string;
-    };
+    }>;
 };
 
 export default async function UserProfile({ params }: ProfilePageProps) {
@@ -22,7 +31,7 @@ export default async function UserProfile({ params }: ProfilePageProps) {
     
     let currentUser: User | null = null;
     let profileUser: User | null = null;
-    let userPostsData: { data: any[]; meta: { nextCursor: number | null } } = {
+    let userPostsData: { data: Post[]; meta: { nextCursor: number | null } } = {
         data: [],
         meta: { nextCursor: null },
     };
@@ -88,14 +97,18 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                 {/* Profile Header with Cover */}
                 <Card className="overflow-hidden mb-6">
                     {/* Cover Photo */}
-                    <div 
-                        className="h-32 md:h-48 bg-gradient-to-r from-accent to-accent/60"
-                        style={profileUser.coverImage ? {
-                            backgroundImage: `url(${profileUser.coverImage})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        } : undefined}
-                    />
+                    <div className="relative h-32 md:h-48 bg-gradient-to-r from-accent to-accent/60">
+                        {profileUser.coverImage && (
+                            <Image
+                                src={profileUser.coverImage}
+                                alt={`${profileUser.name}'s cover photo`}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 896px"
+                                className="object-cover"
+                                priority
+                            />
+                        )}
+                    </div>
                     
                     {/* Profile Info */}
                     <div className="px-6 pb-6">
@@ -106,6 +119,8 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                                 alt={profileUser.name}
                                 width={120}
                                 height={120}
+                                sizes="120px"
+                                priority
                                 className="rounded-full ring-4 ring-card"
                             />
                         </div>
@@ -144,11 +159,13 @@ export default async function UserProfile({ params }: ProfilePageProps) {
                     <h2 className="text-xl font-bold mb-4">
                         {isOwnProfile ? 'Your Posts' : `${profileUser.name}'s Posts`}
                     </h2>
-                    <UserPostsList
-                        userId={profileUser.id}
-                        initialPosts={userPostsData.data}
-                        initialNextCursor={userPostsData.meta.nextCursor}
-                    />
+                    <Suspense fallback={<PostFeedSkeleton />}>
+                        <UserPostsList
+                            userId={profileUser.id}
+                            initialPosts={userPostsData.data}
+                            initialNextCursor={userPostsData.meta.nextCursor}
+                        />
+                    </Suspense>
                 </div>
             </main>
         </div>

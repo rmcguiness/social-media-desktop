@@ -1,19 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/api-error';
+import { postsCache } from '@/lib/api-cache';
+
+const SINGLE_POST_CACHE_TTL = 60_000; // 1 minute
 
 // GET /api/posts/[id] - Get single post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = parseInt(params.id);
+    const { id } = await params;
+    const postId = parseInt(id);
 
-    if (isNaN(postId)) {
+    if (isNaN(postId) || postId <= 0) {
       return NextResponse.json(
         { error: 'Invalid post ID' },
         { status: 400 }
       );
+    }
+
+    // Check cache first
+    const cacheKey = `post:${postId}`;
+    const cached = postsCache.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        },
+      });
     }
 
     const post = await prisma.post.findUnique({
@@ -63,28 +79,70 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(post);
+    // Cache the result
+    postsCache.set(cacheKey, post, SINGLE_POST_CACHE_TTL);
+    
+    return NextResponse.json(post, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+    });
   } catch (error) {
-    console.error('Error fetching post:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch post' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Fetch post', 500);
   }
 }
 
 // DELETE /api/posts/[id] - Delete post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = parseInt(params.id);
+    // Extract and verify auth token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
 
-    if (isNaN(postId)) {
+    const token = authHeader.substring(7);
+    const { verifyToken } = await import('@/lib/jwt');
+    
+    let userId: number;
+    try {
+      const payload = verifyToken(token);
+      userId = payload.userId;
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    const postId = parseInt(id);
+
+    if (isNaN(postId) || postId <= 0) {
       return NextResponse.json(
         { error: 'Invalid post ID' },
         { status: 400 }
+      );
+    }
+
+    // Verify post exists and belongs to user
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) {
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404 }
+      );
+    }
+    if (post.userId !== userId) {
+      return NextResponse.json(
+        { error: 'Not authorized to delete this post' },
+        { status: 403 }
       );
     }
 
@@ -94,33 +152,77 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting post:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete post' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Delete post', 500);
   }
 }
 
 // PATCH /api/posts/[id] - Update post
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = parseInt(params.id);
+    // Extract and verify auth token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7);
+    const { verifyToken } = await import('@/lib/jwt');
+    
+    let userId: number;
+    try {
+      const payload = verifyToken(token);
+      userId = payload.userId;
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    const postId = parseInt(id);
     const body = await request.json();
 
-    if (isNaN(postId)) {
+    if (isNaN(postId) || postId <= 0) {
       return NextResponse.json(
         { error: 'Invalid post ID' },
         { status: 400 }
       );
     }
 
+    // Verify post exists and belongs to user
+    const existingPost = await prisma.post.findUnique({ where: { id: postId } });
+    if (!existingPost) {
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404 }
+      );
+    }
+    if (existingPost.userId !== userId) {
+      return NextResponse.json(
+        { error: 'Not authorized to update this post' },
+        { status: 403 }
+      );
+    }
+
+    // Only allow updating specific fields
+    const allowedFields = ['title', 'content', 'image'];
+    const updateData: Record<string, unknown> = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field];
+      }
+    }
+
     const post = await prisma.post.update({
       where: { id: postId },
-      data: body,
+      data: updateData,
       include: {
         user: {
           select: {
@@ -141,10 +243,6 @@ export async function PATCH(
 
     return NextResponse.json(post);
   } catch (error) {
-    console.error('Error updating post:', error);
-    return NextResponse.json(
-      { error: 'Failed to update post' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Update post', 500);
   }
 }
